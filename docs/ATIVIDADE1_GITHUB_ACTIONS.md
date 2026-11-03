@@ -2,32 +2,21 @@
 
 Arquivo implementado: `.github/workflows/ci.yml`.
 
-## 1. Estágios do Pipeline CI (`build-and-test`)
+## 1. Estágios do Pipeline (`build-and-test`)
 
-1. **Checkout e JDK 17:** utiliza `actions/checkout@v3` (com `fetch-depth: 0` para análise completa de histórico) e `actions/setup-java@v3` com distribuição Eclipse Temurin 17.
-2. **Build Maven:** `mvn -B clean package`.
-3. **Testes Unitários:** `mvn -B test` executando 47 casos JUnit 5.
-4. **Relatório JaCoCo (Exercício 1):** executa `mvn -B jacoco:report` e publica `target/site/jacoco/` como artefato `jacoco-coverage-report` via `actions/upload-artifact@v4`.
-5. **Verificação de Qualidade Estática:** `mvn -B checkstyle:check` (`continue-on-error: false`) e `mvn -B pmd:check`.
-6. **Quality Gate com SonarQube:** utiliza `SonarSource/sonarqube-scan-action@master` lendo `SONAR_TOKEN` e `SONAR_HOST_URL` de `secrets`.
+Implementado exatamente conforme o roteiro da Aula 10:
 
-## 2. Approval Manual antes do Deploy (Exercício 2)
+- Checkout com `actions/checkout@v3` e configuração de JDK 17 (`temurin`) com `actions/setup-java@v3`.
+- Build: `mvn clean package`.
+- Testes unitários: `mvn test`.
+- Relatório JaCoCo (Exercício): `mvn jacoco:report` e upload de `target/site/jacoco/` via `actions/upload-artifact@v4`.
+- Estilo de código: `mvn checkstyle:check` com `continue-on-error: false`.
+- Quality Gate SonarQube: `SonarSource/sonarqube-scan-action@master` com `SONAR_TOKEN` e `SONAR_HOST_URL` (executado quando os secrets do servidor SonarQube estão configurados no repositório).
 
-O job `deploy-staging` possui `needs: build-and-test` e declara o ambiente protegido `environment: staging`:
+## 2. Approval Manual antes do Deploy (Exercício)
 
-```yaml
-  deploy-staging:
-    name: Deploy to Staging
-    needs: build-and-test
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment:
-      name: staging
-```
+O job `deploy` depende de `build-and-test` (`needs: build-and-test`) e referencia `environment: staging`. Para exigir aprovação humana no GitHub:
 
-### Como ativar a aprovação humana obrigatória no GitHub
-
-1. Acesse o repositório em **Settings -> Environments**.
-2. Selecione (ou crie) o ambiente **`staging`**.
-3. Marque **Required reviewers**, informe os revisores responsáveis pela liberação e clique em **Save protection rules**.
-4. Sempre que um commit chegar em `main`, o job `deploy-staging` ficará pausado no status `Waiting` até a aprovação manual de um revisor autorizado.
+1. Acesse **Settings -> Environments -> staging**.
+2. Habilite **Required reviewers** e selecione os aprovadores responsáveis.
+3. Os deploys em `main` aguardarão revisão manual antes de executar os passos do estágio `deploy`.

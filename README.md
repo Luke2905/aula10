@@ -2,29 +2,21 @@
 
 **Aula 10 - Integração Contínua (CI/CD) com Automação de Qualidade** (FATEC - 5º Semestre - Qualidade de Software).
 
-Projeto Java 17 / Maven construído sobre a base da Aula 09 (`Calculadora`, `HeaderUtil`, `LoginService`, `NotificacaoService`) acrescido de persistência JDBC (`AuditoriaNotificacaoRepository`) validada em container PostgreSQL real via **TestContainers**.
+Projeto Maven Java 17 utilizando como base os códigos da Aula 09 (`Main`, `Calculadora`, `HeaderUtil`, `LoginService` e `NotificacaoService`).
 
-## Estrutura das Atividades Implementadas
+## Atividades Implementadas
 
-| Atividade / Etapa | Arquivos Principais | Recursos Implementados |
-| --- | --- | --- |
-| **Atividade 1: Pipeline CI (GitHub Actions)** | `.github/workflows/ci.yml`, `docs/ATIVIDADE1_GITHUB_ACTIONS.md` | Build Maven, Testes JUnit 5, Relatório JaCoCo publicado como artefato, Checkstyle, PMD, SonarQube Scan e Approval manual antes do deploy (`environment: staging`) |
-| **Atividade 2: Pipeline CD (Jenkins)** | `Jenkinsfile`, `Dockerfile`, `k8s/deployment.yaml`, `docs/ATIVIDADE2_JENKINS_CD.md` | Build, Test + JUnit report, estágio de Análise Estática PMD, Deploy em Staging no branch `main`, Rollback automático (`kubectl rollout undo`) e alerta Slack |
-| **Atividade 3: Automação de Qualidade** | `sonar-project.properties`, `config/sonarqube/quality-gate-setup.sh`, `docs/ATIVIDADE3_QUALITY_GATE.md` | Bloqueio de PRs com falhas, regras de cobertura mínima 80%, zero bugs críticos, debt técnico < 1h e simulação real de PR rejeitado por baixa cobertura (`teste/pr-baixa-cobertura`) |
-| **Desafio Integrado & Segurança OWASP** | `.github/workflows/integrated-pipeline.yml`, `docs/DESAFIO_INTEGRADO_E_DISCUSSAO.md` | Execução paralela de Testes Unitários (cobertura > 85%), Testes de Integração com TestContainers PostgreSQL 16 e OWASP Dependency-Check antes do deploy |
-
-## Comandos Locais
-
-```bash
-# Build, testes unitários, JaCoCo (>= 80%), Checkstyle, PMD e Javadoc
-mvn -B clean package checkstyle:check pmd:check javadoc:javadoc
-
-# Validar limite de cobertura do Desafio Integrado (> 85%)
-mvn -B test jacoco:check -Djacoco.minimum.coverage=0.86
-
-# Executar aplicação de demonstração
-java -jar target/aula10_iqs-1.0.0.jar
-
-# Executar testes de integração com TestContainers (requer Docker em execução)
-mvn -B verify -Pintegration-tests
-```
+1. **Atividade 1 - Pipeline CI com GitHub Actions (`.github/workflows/ci.yml`):**
+   - Build com Maven (`mvn clean package`), Testes Unitários (`mvn test`), Checkstyle (`mvn checkstyle:check` com `continue-on-error: false`) e SonarQube Scan (`SonarSource/sonarqube-scan-action@master`).
+   - Exercícios: geração e publicação do relatório JaCoCo (`mvn jacoco:report`) e approval manual antes do deploy (`environment: staging`).
+2. **Atividade 2 - Pipeline CD com Jenkins (`Jenkinsfile`):**
+   - Estágios `Build`, `Test` (com publicação `junit`), `Deploy to Staging` (no branch `main` com `Dockerfile` e `k8s/deployment.yaml`) e notificação `slackSend` em falha.
+   - Exercícios: estágio de análise estática `PMD` (`mvn pmd:check`) e rollback automático (`kubectl rollout undo deployment/myapp`) em caso de falha no deploy.
+   - Roteiro de configuração do Webhook no GitHub em `docs/ATIVIDADE2_JENKINS_CD.md`.
+3. **Atividade 3 - Automação de Qualidade (`sonar-project.properties`, `.github/workflows/ci.yml`):**
+   - Bloqueio de PRs com falhas (`Quality Gate` com `-Dsonar.qualitygate.wait=true` e `jacoco:check` >= 80%).
+   - Regras de cobertura mínima 80%, zero bugs críticos e debt técnico < 1h (`config/sonarqube/quality-gate-setup.sh`).
+   - Exercício: branch `teste/pr-baixa-cobertura` demonstrando a rejeição por baixa cobertura.
+4. **Desafio Integrado e Tarefa Final (`.github/workflows/integrated-pipeline.yml`):**
+   - Execução em paralelo dos testes unitários e dos testes de integração com **TestContainers** (`mvn verify -Pintegration-tests`).
+   - Deploy condicionado à aprovação de todos os testes, cobertura > 85% e zero vulnerabilidades no **OWASP Dependency-Check**.
