@@ -1,0 +1,139 @@
+name: Integrated CI/CD Challenge Pipeline
+
+on:
+  push:
+    branches: [main, 'teste/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Compile and Package (Skip Tests)
+        run: mvn -B clean test-compile package -DskipTests
+
+  unit-tests:
+    name: Unit Tests & Coverage (> 85%)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run Unit Tests and Enforce Coverage > 85%
+        run: mvn -B test jacoco:report jacoco:check checkstyle:check pmd:check -Djacoco.minimum.coverage=0.86
+
+      - name: Upload JaCoCo Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrated-jacoco-report
+          path: target/site/jacoco/
+
+  integration-tests:
+    name: Integration Tests (TestContainers PostgreSQL)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run Integration Tests with TestContainers
+        run: mvn -B verify -Pintegration-tests -Dsurefire.skip=true -Djacoco.skip=true
+
+      - name: Upload Failsafe Integration Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-reports
+          path: target/failsafe-reports/
+
+  owasp-security-check:
+    name: OWASP Dependency-Check
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Package Application JAR
+        run: mvn -B package -DskipTests
+
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        with:
+          project: 'aula10_iqs'
+          path: '.'
+          format: 'ALL'
+          out: 'reports'
+          args: >
+            --noupdate
+            --disableAssembly
+            --failOnCVSS 0.1
+
+      - name: Upload OWASP Dependency-Check Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: ${{ github.workspace }}/reports
+
+  deploy:
+    name: Deploy to Staging (All Gates Passed)
+    needs: [unit-tests, integration-tests, owasp-security-check]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Package Verified Release JAR
+        run: mvn -B package -DskipTests
+
+      - name: Build Verified Container Image
+        run: docker build -t myapp:${{ github.sha }} .
+
+      - name: Validate Staging Deployment Manifest
+        run: kubectl apply --dry-run=client -f k8s/deployment.yaml

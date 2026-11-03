@@ -1,0 +1,6 @@
+/target/
+/.idea/
+*.iml
+/out/
+/reports/
+/.dependency-check-data/
