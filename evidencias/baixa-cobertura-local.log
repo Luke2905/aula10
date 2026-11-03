@@ -1,0 +1,14 @@
+[INFO] Scanning for projects...
+[INFO] ----------------------< br.edu.fatec:aula10_iqs >-----------------------
+[INFO] Building Aula 10 - Integração Contínua (CI/CD) com Automação de Qualidade 1.0.0
+[INFO] --- surefire:3.5.2:test (default-test) @ aula10_iqs ---
+[INFO] Running br.edu.fatec.iqs10.HeaderUtilTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] --- jacoco:0.8.13:check (quality-gate-cobertura) @ aula10_iqs ---
+[INFO] Analyzed bundle 'aula10_iqs' with 5 classes
+[WARNING] Rule violated for bundle aula10_iqs: lines covered ratio is 0.08, but expected minimum is 0.80
+[WARNING] Rule violated for bundle aula10_iqs: branches covered ratio is 0.14, but expected minimum is 0.80
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.jacoco:jacoco-maven-plugin:0.8.13:check (quality-gate-cobertura) on project aula10_iqs: Coverage checks have not been met.

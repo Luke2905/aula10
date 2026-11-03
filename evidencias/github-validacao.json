@@ -1,0 +1,134 @@
+{
+  "data_local": "2026-11-03",
+  "timezone": "America/Sao_Paulo",
+  "repositorio": "https://github.com/Luke2905/aula10",
+  "cobertura_main": {
+    "linhas_cobertas": 33,
+    "linhas_totais": 37,
+    "percentual_linhas": 89.19,
+    "branches_cobertos": 14,
+    "branches_totais": 14,
+    "percentual_branches": 100.0
+  },
+  "execucoes_github_actions": [
+    {
+      "id": 41691067582,
+      "name": "Java CI Pipeline",
+      "head_branch": "main",
+      "head_sha": "3b46b4f",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067582",
+      "jobs": [
+        {
+          "name": "build-and-test",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067582/job/126109486656"
+        },
+        {
+          "name": "deploy",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067582/job/126110014115"
+        }
+      ]
+    },
+    {
+      "id": 41691067485,
+      "name": "Integrated CI/CD Pipeline",
+      "head_branch": "main",
+      "head_sha": "3b46b4f",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067485",
+      "jobs": [
+        {
+          "name": "build",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067485/job/126109485432"
+        },
+        {
+          "name": "unit-tests",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067485/job/126109711477"
+        },
+        {
+          "name": "integration-tests",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067485/job/126109711715"
+        },
+        {
+          "name": "owasp-dependency-check",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067485/job/126109711730"
+        },
+        {
+          "name": "deploy",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691067485/job/126110179955"
+        }
+      ]
+    },
+    {
+      "id": 41691293583,
+      "name": "Java CI Pipeline",
+      "head_branch": "teste/pr-baixa-cobertura",
+      "head_sha": "512afb6",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293583",
+      "jobs": [
+        {
+          "name": "Quality Gate",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293583/job/126110252202"
+        },
+        {
+          "name": "build-and-test",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293583/job/126110252727"
+        },
+        {
+          "name": "deploy",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293583/job/126110646408"
+        }
+      ]
+    },
+    {
+      "id": 41691293414,
+      "name": "Integrated CI/CD Pipeline",
+      "head_branch": "teste/pr-baixa-cobertura",
+      "head_sha": "512afb6",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293414",
+      "jobs": [
+        {
+          "name": "build",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293414/job/126110250636"
+        },
+        {
+          "name": "integration-tests",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293414/job/126110520092"
+        },
+        {
+          "name": "unit-tests",
+          "conclusion": "failure",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293414/job/126110520235"
+        },
+        {
+          "name": "owasp-dependency-check",
+          "conclusion": "success",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293414/job/126110520254"
+        },
+        {
+          "name": "deploy",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/Luke2905/aula10/actions/runs/41691293414/job/126111004316"
+        }
+      ]
+    }
+  ]
+}
